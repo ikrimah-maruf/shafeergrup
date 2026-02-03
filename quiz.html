@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Simulator Teori SIM - SHAFEER</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f0f9ff; }
+        
+        .quiz-container { max-width: 800px; margin: 2rem auto; background: white; padding: 2rem; border-radius: 10px; }
+        
+        .quiz-header { display: flex; justify-content: space-between; margin-bottom: 2rem; }
+        .timer { background: #fef3c7; padding: 0.5rem 1rem; border-radius: 5px; }
+        
+        .question { margin-bottom: 2rem; }
+        .question-text { font-size: 1.2rem; margin-bottom: 1rem; font-weight: bold; }
+        
+        .options { display: grid; gap: 0.5rem; }
+        .option { padding: 1rem; border: 2px solid #ddd; border-radius: 5px; cursor: pointer; }
+        .option:hover { background: #f3f4f6; }
+        .option.selected { border-color: #1e40af; background: #eff6ff; }
+        
+        .navigation { display: flex; justify-content: space-between; margin-top: 2rem; }
+        .nav-btn { padding: 0.5rem 1rem; background: #1e40af; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        
+        .result { display: none; text-align: center; }
+        .score { font-size: 2rem; color: #10b981; }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <div class="quiz-header">
+            <h1>📝 Quiz Teori SIM</h1>
+            <div class="timer">⏰ Waktu: <span id="time">30:00</span></div>
+        </div>
+        
+        <div id="question-container">
+            <!-- Questions will be loaded here -->
+        </div>
+        
+        <div class="navigation">
+            <button class="nav-btn" id="prev-btn">← Sebelumnya</button>
+            <button class="nav-btn" id="next-btn">Selanjutnya →</button>
+        </div>
+        
+        <button class="nav-btn" id="submit-btn" style="display:none; width:100%; margin-top:1rem;">📤 Submit Quiz</button>
+        
+        <div class="result" id="result-container">
+            <h2>Hasil Quiz Anda</h2>
+            <div class="score" id="score">0/100</div>
+            <p id="result-message"></p>
+            <button class="nav-btn" onclick="restartQuiz()">🔄 Coba Lagi</button>
+        </div>
+    </div>
+    
+    <script>
+        // Sample questions (100 in real version)
+        const questions = [
+            {
+                question: "Apa arti rambu larangan masuk?",
+                options: [
+                    "Kendaraan dilarang masuk",
+                    "Kendaraan diperbolehkan masuk",
+                    "Hanya sepeda motor yang boleh masuk",
+                    "Hanya mobil yang boleh masuk"
+                ],
+                correct: 0
+            },
+            {
+                question: "Kecepatan maksimum di jalan tol adalah?",
+                options: [
+                    "60 km/jam",
+                    "80 km/jam", 
+                    "100 km/jam",
+                    "120 km/jam"
+                ],
+                correct: 2
+            },
+            {
+                question: "Apa yang harus dilakukan saat lampu merah?",
+                options: [
+                    "Berhenti",
+                    "Melaju pelan",
+                    "Ngebut",
+                    "Putar balik"
+                ],
+                correct: 0
+            }
+        ];
+        
+        let currentQuestion = 0;
+        let userAnswers = new Array(questions.length).fill(null);
+        let timeLeft = 30 * 60; // 30 minutes in seconds
+        
+        // Initialize quiz
+        function loadQuestion() {
+            const container = document.getElementById('question-container');
+            const q = questions[currentQuestion];
+            
+            container.innerHTML = `
+                <div class="question">
+                    <div class="question-text">Pertanyaan ${currentQuestion + 1}: ${q.question}</div>
+                    <div class="options">
+                        ${q.options.map((option, index) => `
+                            <div class="option ${userAnswers[currentQuestion] === index ? 'selected' : ''}" 
+                                 onclick="selectOption(${index})">
+                                ${String.fromCharCode(65 + index)}. ${option}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            // Update navigation buttons
+            document.getElementById('prev-btn').style.display = currentQuestion === 0 ? 'none' : 'block';
+            document.getElementById('next-btn').style.display = currentQuestion === questions.length - 1 ? 'none' : 'block';
+            document.getElementById('submit-btn').style.display = currentQuestion === questions.length - 1 ? 'block' : 'none';
+        }
+        
+        function selectOption(index) {
+            userAnswers[currentQuestion] = index;
+            loadQuestion();
+        }
+        
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                loadQuestion();
+            }
+        }
+        
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                loadQuestion();
+            }
+        }
+        
+        function submitQuiz() {
+            // Calculate score
+            let score = 0;
+            questions.forEach((q, index) => {
+                if (userAnswers[index] === q.correct) {
+                    score++;
+                }
+            });
+            
+            // Show result
+            document.getElementById('question-container').style.display = 'none';
+            document.querySelector('.navigation').style.display = 'none';
+            document.getElementById('submit-btn').style.display = 'none';
+            
+            const resultContainer = document.getElementById('result-container');
+            resultContainer.style.display = 'block';
+            
+            document.getElementById('score').textContent = `${score}/${questions.length}`;
+            
+            // Result message
+            const percentage = (score / questions.length) * 100;
+            let message = '';
+            if (percentage >= 80) {
+                message = '🎉 Excellent! Anda siap ujian SIM!';
+            } else if (percentage >= 60) {
+                message = '👍 Bagus, tapi perlu belajar lagi.';
+            } else {
+                message = '📚 Perlu belajar lebih giat lagi.';
+            }
+            document.getElementById('result-message').textContent = message;
+        }
+        
+        function restartQuiz() {
+            currentQuestion = 0;
+            userAnswers = new Array(questions.length).fill(null);
+            timeLeft = 30 * 60;
+            
+            document.getElementById('question-container').style.display = 'block';
+            document.querySelector('.navigation').style.display = 'flex';
+            document.getElementById('result-container').style.display = 'none';
+            
+            loadQuestion();
+        }
+        
+        // Timer function
+        function updateTimer() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('time').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            if (timeLeft > 0) {
+                timeLeft--;
+            } else {
+                submitQuiz();
+            }
+        }
+        
+        // Initialize
+        loadQuestion();
+        setInterval(updateTimer, 1000);
+    </script>
+</body>
+</html>

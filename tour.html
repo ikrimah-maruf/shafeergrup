@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHAFEER TOUR & TRAVEL</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; }
+        
+        /* Header */
+        .header { background: #1e40af; color: white; padding: 1rem; }
+        .logo { font-size: 1.5rem; font-weight: bold; }
+        
+        /* Tour Cards */
+        .tour-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; padding: 1rem; }
+        .tour-card { border: 1px solid #ddd; border-radius: 8px; overflow: hidden; }
+        .tour-image { width: 100%; height: 200px; object-fit: cover; }
+        .tour-info { padding: 1rem; }
+        .tour-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 0.5rem; }
+        .tour-price { color: #10b981; font-size: 1.3rem; font-weight: bold; }
+        
+        /* Vehicle Selector */
+        .vehicle-selector { display: flex; gap: 1rem; margin: 1rem 0; }
+        .vehicle-option { border: 2px solid #ddd; padding: 1rem; border-radius: 8px; cursor: pointer; }
+        .vehicle-option.active { border-color: #1e40af; background: #eff6ff; }
+        .vehicle-name { font-weight: bold; }
+        .vehicle-price { color: #10b981; }
+        
+        /* WhatsApp Button */
+        .whatsapp-btn { background: #25D366; color: white; padding: 1rem; border-radius: 8px; text-decoration: none; display: inline-block; margin-top: 1rem; }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .tour-grid { grid-template-columns: 1fr; }
+            .vehicle-selector { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">🚗 SHAFEER TOUR & TRAVEL</div>
+    </div>
+    
+    <div class="tour-grid">
+        <!-- Tour Package 1 -->
+        <div class="tour-card">
+            <img src="images/tour1.jpg" alt="Wisata Jogja" class="tour-image">
+            <div class="tour-info">
+                <div class="tour-title">Wisata Jogja 2 Hari 1 Malam</div>
+                <div class="tour-desc">Mengunjungi Malioboro, Candi Borobudur, Keraton</div>
+                
+                <!-- VEHICLE SELECTOR -->
+                <div class="vehicle-selector">
+                    <div class="vehicle-option active" data-price="1200000" data-vehicle="Avanza">
+                        <div class="vehicle-name">🚗 Avanza</div>
+                        <div class="vehicle-price">Rp 1.200.000</div>
+                        <div class="vehicle-capacity">Max: 4 orang</div>
+                    </div>
+                    
+                    <div class="vehicle-option" data-price="2500000" data-vehicle="Elf">
+                        <div class="vehicle-name">🚌 Elf</div>
+                        <div class="vehicle-price">Rp 2.500.000</div>
+                        <div class="vehicle-capacity">Max: 12 orang</div>
+                    </div>
+                    
+                    <div class="vehicle-option" data-price="3000000" data-vehicle="Hiace">
+                        <div class="vehicle-name">🚐 Hiace</div>
+                        <div class="vehicle-price">Rp 3.000.000</div>
+                        <div class="vehicle-capacity">Max: 16 orang</div>
+                    </div>
+                </div>
+                
+                <!-- SELECTED PRICE -->
+                <div class="selected-price">
+                    <strong>Harga Terpilih: <span id="display-price">Rp 1.200.000</span></strong>
+                </div>
+                
+                <!-- WHATSAPP BUTTON -->
+                <a href="#" class="whatsapp-btn" id="whatsapp-btn">
+                    📱 Pesan via WhatsApp
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Vehicle Selection
+        const vehicleOptions = document.querySelectorAll('.vehicle-option');
+        const displayPrice = document.getElementById('display-price');
+        const whatsappBtn = document.getElementById('whatsapp-btn');
+        
+        let selectedVehicle = 'Avanza';
+        let selectedPrice = 1200000;
+        
+        vehicleOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                // Remove active class from all
+                vehicleOptions.forEach(opt => opt.classList.remove('active'));
+                
+                // Add active to clicked
+                this.classList.add('active');
+                
+                // Update selected data
+                selectedVehicle = this.getAttribute('data-vehicle');
+                selectedPrice = this.getAttribute('data-price');
+                
+                // Update display
+                displayPrice.textContent = 'Rp ' + parseInt(selectedPrice).toLocaleString('id-ID');
+                
+                // Update WhatsApp link
+                updateWhatsAppLink();
+            });
+        });
+        
+        function updateWhatsAppLink() {
+            const message = `Halo SHAFEER TOUR, saya ingin pesan:
+📦 Paket: Wisata Jogja 2 Hari 1 Malam
+🚗 Mobil: ${selectedVehicle} - Rp ${parseInt(selectedPrice).toLocaleString('id-ID')}
+📅 Tanggal: [isi sendiri]
+👤 Jumlah orang: [isi sendiri]
+Mohon info lengkapnya.`;
+            
+            const encodedMessage = encodeURIComponent(message);
+            whatsappBtn.href = `https://wa.me/6282225508270?text=${encodedMessage}`;
+        }
+        
+        // Initialize
+        updateWhatsAppLink();
+    </script>
+</body>
+</html>

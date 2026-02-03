@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHAFEER DRIVING SCHOOL</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f3f4f6; }
+        
+        .container { max-width: 600px; margin: 2rem auto; background: white; padding: 2rem; border-radius: 10px; }
+        h1 { color: #1e40af; margin-bottom: 1rem; }
+        
+        .form-group { margin-bottom: 1rem; }
+        label { display: block; margin-bottom: 0.5rem; font-weight: bold; }
+        input, select, textarea { width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 5px; }
+        
+        .radio-group { display: flex; gap: 1rem; }
+        .radio-option { display: flex; align-items: center; }
+        
+        .submit-btn { background: #1e40af; color: white; padding: 1rem 2rem; border: none; border-radius: 5px; cursor: pointer; width: 100%; }
+        .submit-btn:hover { background: #1e3a8a; }
+        
+        .success-message { background: #10b981; color: white; padding: 1rem; border-radius: 5px; margin-top: 1rem; display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚗 SHAFEER DRIVING SCHOOL - Pendaftaran</h1>
+        
+        <form id="registration-form">
+            <div class="form-group">
+                <label for="name">Nama Lengkap:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="phone">No. WhatsApp:</label>
+                <input type="tel" id="phone" name="phone" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Pilihan Kursus:</label>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="course_type" value="manual" checked> Manual
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="course_type" value="matic"> Matic
+                    </label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="schedule">Jadwal yang Diinginkan:</label>
+                <textarea id="schedule" name="schedule" rows="3" placeholder="Contoh: Senin & Rabu jam 08:00-10:00, atau Setiap Sabtu pagi"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="message">Pesan/Pernyataan:</label>
+                <textarea id="message" name="message" rows="3" placeholder="Alasan memilih kursus atau pertanyaan"></textarea>
+            </div>
+            
+            <button type="submit" class="submit-btn">📝 Kirim Pendaftaran</button>
+        </form>
+        
+        <div class="success-message" id="success-message">
+            ✅ Pendaftaran berhasil! Kami akan menghubungi Anda via WhatsApp.
+        </div>
+    </div>
+    
+    <script>
+        const form = document.getElementById('registration-form');
+        const successMessage = document.getElementById('success-message');
+        
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const formData = {
+                name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                course_type: document.querySelector('input[name="course_type"]:checked').value,
+                schedule: document.getElementById('schedule').value,
+                message: document.getElementById('message').value
+            };
+            
+            // Simulate saving to database (in real app, send to server)
+            console.log('Registration data:', formData);
+            
+            // Show success message
+            successMessage.style.display = 'block';
+            form.reset();
+            
+            // Auto-scroll to success message
+            successMessage.scrollIntoView({ behavior: 'smooth' });
+            
+            // Send WhatsApp notification (optional)
+            const whatsappMsg = `Pendaftaran Baru Driving School:
+Nama: ${formData.name}
+No WA: ${formData.phone}
+Kursus: ${formData.course_type}
+Jadwal: ${formData.schedule}
+Pesan: ${formData.message}`;
+            
+            // For admin notification (optional)
+            const adminWhatsapp = `https://wa.me/6282225508270?text=${encodeURIComponent(whatsappMsg)}`;
+            // window.open(adminWhatsapp, '_blank'); // Uncomment to send to admin
+        });
+    </script>
+</body>
+</html>
